@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="styles.css"><title>Rule 110 automaton, version 2</title></head><body><h1>Rule 110 automaton, version 2</h1>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/110bot-plywood.jpg" alt=""></div><center></center></div></p><p>This is the second version of my rule 110 automaton. It's a simplified version of the <a href="3d-printed-cellular-automaton.html">old 3D printed cellular automaton</a>, and made from laser cut parts instead of using 3D sintering.</p>
+<hr />
+<p>Rule 110 is an elementary but Turing-complete 1-dimensional cellular automaton. Each cell of the new generation is based on the corresponding cell in the previous generation, and its two neighbours. It follows these rules:</p>
+<table>
+<thead>
+<tr>
+<th>000</th>
+<th>001</th>
+<th>010</th>
+<th>011</th>
+<th>100</th>
+<th>101</th>
+<th>110</th>
+<th>111</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>We can simplify this by saying that if all three cells are one, or the rightmost two cells are zero, then the output is zero, otherwise it is one.</p>
+<hr />
+<p>When the previous generation and new generation are represented by ball bearings, they look like this. The bottom row is the new generation and the top row is the previous generation.</p>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/datarepresentation.png" alt=""></div><center></center></div></p><hr />
+<p>What's now required is a mechanism that will push the new generation ball bearings from their initial position at 1 to a new position at 0 if the relevant cells match the pattern. To do this, we drop levers onto the track and where the data is in the right pattern, they will fall onto the track:</p>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/leverposition.png" alt=""></div><center></center></div></p><hr />
+<p>The two levers sensing the input row now form a logical 'or' operation; if either lever falls, they'll push a third lever which then pushes the ball bearing in the output row into the '0' position.</p>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/lever-diagram.png" alt=""></div><center></center></div></p><hr />
+<p>Here's a very tedious video of an acrylic version working - it takes just over 4 minutes to run 37 cells, so clocking in at 146mHz. It's the fastest computer I've built so far. This YouTube video has annotations which explain some of its operations. You may want to turn annotations on if you don't normally do so.</p>
+<iframe class="youtube-player" type="text/html" width="480" height="385" src="https://www.youtube.com/embed/-1nbC6IfMm0" frameborder="0"></iframe><p>It's not fully automatic like the Turing machine, requiring a person to reset the output row and turn the machine round for each generation of the rule 110 cellular automaton. It is however much more relaible and much quicker. The 5/2 Turing machine emulates rule 110 (that's it's proof of universality) which this automaton calculates directly, and it would take two passes at the tape to calculate this cellular automaton.</p>
+<p><a href="index.html">Return to index</a></p></body>
+</html>

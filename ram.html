@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="styles.css"><title>Random access mechanical memory</title></head><body><h1>Random access mechanical memory</h1>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/64bit-cell.png" alt="64-bit mechanical RAM cell"></div><center>64-bit mechanical RAM cell</center></div></p><p>One of the biggest differences between my previous Turing machines and cellular automata has been the previous lack of random
+-access memory. Turing machines naturally have sequential-access memory; you cannot access anything that's not at the current memory location without constructing a means to access it on the tape.</p>
+<p>I've also previously resisted designing anything that requires custom-made memory cells - hence the use of square metal grid and ball bearings for previous machines.
+However, to make something actually useful as a computer, I've decided to relax this, while still trying to keep the number of /complex/ parts to log2 of the number of cells required.</p>
+<p>Given a 1-to-n decoder is available (see [[Mechanical decoder logic]]), it then becomes necessary to make a row and column based system in which only the intersection of that row and column can be ejected, or inserted, into a grid.</p>
+<p>My current memory system</p>
+<p><a href="index.html">Return to index</a></p></body>
+</html>

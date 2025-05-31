@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="styles.css"><title>Investigating Raspberry Pi performance problems</title></head><body><h1>Investigating Raspberry Pi performance problems</h1>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/Raspi-Thrust.png" alt=""></div><center></center></div></p><p>I bought a Raspberry Pi some time ago and have been trying to run some of my PyGame games on it. I'm going to describe one performance issue I've seen with it. This isn't a criticism of the board in general, which I still think is excellent for the price.</p>
+<p>I wanted to show something off at the Raspberry Jam last weekend in Cambridge, so shunted one of my games onto the SD card and started it up. The good news is that the Pi's standard distributions come with Python 2.7 and PyGame already installed, which saves a lot of time and effort. The bad news is that my game, previously running at 120+ frames per second on my desktop was down to 5 FPS on the Pi, which makes it unplayable.</p>
+<p>Of course you wouldn't expect a 700MHz ARM1176 to be as quick as my Core i5, but this isn't a particularly taxing game, and I expected it to be well within the Raspberry Pi's capabilities. It's a 2D game, using lots of blits to draw tiled scenery, some bitmap rotates and vector arithmetic for collision detection.</p>
+<p>My first suspect was floating point, as my game uses a fair amount to do polygon overlap calculations and I'm using PyGame's libraries to rotate bitmaps. The old Debian linux distribution for the Pi didn't use hardware floating point. Yesterday, the new new Raspbian image was released with hardware floating point support, so I gave that a try. No luck - it's still at about 5 FPS.</p>
+<p>Python has a built-in profiler which can be invoked with
+python -m cProfile myprog.py</p>
+<p>It's best to sort samples by time and save this to a file, so I use:
+python -m cProfile -s time myprog.py &gt; profileoutput</p>
+<p>(You can also use &quot;-o file&quot; to redirect the profile output to a file, but it's saved in a binary format if you do that, so it's easier to redirect stdout, although this does mix the profiler output with the output from your program)</p>
+<p>Here's the profile from the Rasbperry Pi, with some information stripped out for brevity:</p>
+<table>
+<thead>
+<tr>
+<th>Samples</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>225868</td>
+<td>65.576 {method 'blit' of 'pygame.Surface' objects}</td>
+</tr>
+<tr>
+<td>1</td>
+<td>47.159 thrust.py:1()</td>
+</tr>
+<tr>
+<td>605</td>
+<td>3.082 {method 'fill' of 'pygame.Surface' objects}</td>
+</tr>
+<tr>
+<td>605</td>
+<td>2.802 {pygame.display.flip}</td>
+</tr>
+<tr>
+<td>64433</td>
+<td>1.967 {range}</td>
+</tr>
+<tr>
+<td>76268</td>
+<td>1.741 {shipIntersectsBlock)</td>
+</tr>
+<tr>
+<td>10030</td>
+<td>0.977 {pygame.draw.circle}</td>
+</tr>
+</tbody>
+</table>
+<p>It's often useful to look at the profile on the well-performing case, so this is the profile from my desktop machine:</p>
+<table>
+<thead>
+<tr>
+<th>Samples</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>748686</td>
+<td>11.493 method 'blit' of 'pygame.Surface' objects}</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2.859 thrust.py:1()</td>
+</tr>
+<tr>
+<td>2321</td>
+<td>2.523 {pygame.display.flip}</td>
+</tr>
+<tr>
+<td>2321</td>
+<td>0.405 {method 'fill' of 'pygame.Surface' objects}</td>
+</tr>
+<tr>
+<td>499709</td>
+<td>0.246 (shipIntersectsBlock)</td>
+</tr>
+<tr>
+<td>247663</td>
+<td>0.081 {range}</td>
+</tr>
+</tbody>
+</table>
+<p>Time at the file level of thrust.py has gone up proportionally on the Pi, but this is probably because the desktop version ran for longer and initialization code wasn't such a significant part. This wasn't a very carefully controlled test. The main thing to note is that 'blit' is what we're spending most of our time on, in most cases.</p>
+<p>To test this, I removed one blit from the code which blits the static background onto the screen every frame. As might be expected, the performance went up from 5.2 FPS to 8.8 FPS. That's small in absolute terms but a very significant chance proportionally.</p>
+<p>Now, there's a number of ways to reduce that - the scenery doesn't change often, so it may be more efficient to construct a single scenery image and keep blitting this to the screen rather than blitting each tile individually, each frame. There's also a lot of settings to play with regarding pixel depth.</p>
+<p>I've got a suspicion that one of the biggest problems is the resolution I'm running - 1824x1104, which is a lot of work for the graphics hardware. My game only runs at 640x480, but I haven't figured out how to get the Raspberry Pi's framebuffer to use a lower res - using a smaller monitor would be the easiest way, if I had one.</p>
+<p>Update 19th July 2012: Tried this on an Android tablet (Asus TF300) and got 25FPS; and on a laptop with an Intel U4100 @1.3GHz; Radeon 4550 - 50 FPS. Both of these devices are quite capable of doing lots of 2D blits at 50FPS without brea</p>
+<p><a href="index.html">Return to index</a></p></body>
+</html>

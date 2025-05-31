@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+<title>Srimech.com</title>
+<description>Robots, automata and electronics</description>
+<link>https://www.srimech.com</link>
+<pubDate>Sun, 21 Aug 2022 00:00:00 GMT</pubDate>
+<ttl>7200</ttl>
+<item><title>Millihertz 5 Progress August 2022</title>
+<description><![CDATA[<a href="https://www.srimech.com/millihertz-5-progress-2022.html">Link to original article</a>
+Millihertz 5 Progress August 2022
+
+
+Picture of Millihertz 5 / Offspring in February 2022
+Since the last update, I've made a few changes to the Millihertz 5 computer, and I've also been working on a document designed for print which gives a high level overview of the machine.
+
+
+The document is available as a PDF: 
+Offspring PDF
+ or as Pandoc-rendered HTML: 
+Offspring HTML
+.
+
+
+Regenerator
+
+
+Old (left) vs new (right) regenerator units
+The regenerator now has a completely different design and is separate to the distributor unit. The old regenerator and distributor plate can be seen on the left above, and the new unit on the right. The new distributor unit can be seen on the lower right of the above photos.
+
+
+Accumulator / PC mounting
+
+
+The Accumulator and PC are now mounted front-to-back on the machine. Previously, the program counter (PC) was to be mounted in a separate enclosure, which would have involved a lot of extra pipework to transport ball bearings around, and would have made the machine more difficult to transport. Now, the PC is mounted in front of the accumulator, which makes routing much easier. The downside is that the accumulator value isn't as visible.
+
+
+Sequencer
+
+
+August 2022 instruction decoder
+The method for conditional signals, that is signals only fire on certain instructions, has been simplified. In the previous version, a 3-to-8 decoder dropped rods into a path to connect a signal path from the camshaft to the output signals; only the fully connected path would transmit any mechanical movement. In the current version, the camshaft followers run directly through the 3-to-8 decoder; signals are sequenced by a drop in the cam level, but the decoder will also prevent 7 of the 8 rods from dropping. Hence, the follower can only drop when the camshaft and the decoder both allow it. This also avoids the need for a separate hold-off signal to lift all the decoder's output rods off the decoders when the decoder rods are moving; the cams just lift all the followers slightly higher.
+
+
+Setting up the rod positions in the instruction decoder has changed. Rather than having a separate mechanism to push rods into position with a ball bearing connecting a mechanical path, the ball bearings now drop directly onto levers and their momentum moves the decoder rods; this feels hacky, but saves a lot of mechanical complication and appears to work reliably with plenty of energy to spare. Resetting all rods back to their start positions still requires a dedicated signal and lever.
+
+
+Return to index]]></description>
+<pubDate>Sun, 21 Aug 2022 00:00:00 GMT</pubDate>
+</item>
+<item><title>Millihertz 5 Progress April 2020</title>
+<description><![CDATA[<a href="https://www.srimech.com/millihertz-5-progress-2020.html">Link to original article</a>
+Millihertz 5 Progress April 2020
+
+
+Picture of all complete parts of the computer
+Work is progressing slowly on the Millihertz 5, my all-mechanical implementation of the 
+Manchester Baby
+. The UK is currently under lockdown, which prevents me accessing the laser cutter in my hackspace, but does give my some time to write documentation. This is an informal discussion of the machine's current state; more formal plans can be found on 
+the Offspring repository on GitHub
+
+
+From the top down, the metering unit at the top is mostly working, other than being a bit stiff and jamming occasionally. This takes a stream of ball bearings in plastic pipe and meters out exactly eight ball bearings at a time, then distributes them out to the 23mm spacing between columns which the rest of the machine uses.
+
+
+The top end regenerator - which selectively injects ball bearings into the top of the machine, based on which bearings are present lower down in the machine - has been one of the most difficult things to get working, but the top part of this works fine at least. Most of the datapath works on gravity, so there must be some mechanism to send data upwards at some point. Ball bearings will be physically returned by a lift, yet to be designed, but the information needs to be sent separately using the 'regenerator' mechanism, which uses eight lines of string which are pulled down to send a '1' upwards.
+
+
+After the regenerator, ball bearings fall into the memory unit, which is also working well. The decoder (the black unit on the right of the machine) decodes the 5-bit address into one of 16 lines; this is chainable so that a second decoder below it can decode the other 16 addresses when we move up to full operation. The "address sender" unit which senses ball bearings and sets up the decoder's address lines must come much lower down, below the instruction counter, and this is posing some problems. The 3mm threaded rods I planned to use become too flexible at the nearly 1 metre length I need, so these may need to be upgraded to a wider hollow tube material.
+
+
+
+
+The distributor unit
+Below the memory is a combination distributor and regenerator; this has to discard memory values (for store instructions), divert the memory value to the instruction counter (for jump instructions) or divert it to the instruction decoder (for instruction fetching). You may be able to see from the picture that two red props have been added which tilt the distributor slightly. This is to help the bearings fall out of the back of the machine, where they would go on to their destination. The slope still isn't enough, and some bearings are failing to fall out and remaining stuck in the distributor.
+
+
+The regenerator part of this, which senses ball bearings and pulls strings to send data up the machine, is also jamming; the force the strings exert is enough to hold ball bearings in place when they should fall through to the rest of the machine.
+
+
+The lowest part of the datapath, the staircase subtractor/accumulator unit, is one of the oldest designed parts of the machine, and is working very well. Below this will be another regenerator to send the accumulator's value up to memory. This will be largely the same as the regenerator sender part of the distributor, so I'm leaving it until I get the design of the first regenerator sender working correctly.
+
+
+Next to the subtractor, there's a temporary Lego contraption with three levers, which is hooked up to various parts near the top of the machine, to test that the parts really do operate by cable/string tension, rather than directly prodding parts.
+
+
+
+
+The cam-based sequencer unit
+The sequencer is the most current development. This is a large camshaft with 18 cam profiles. The cam profiles are designed to be modular, coming in quarter-circle sections which can be individually replaced. However, they don't snap into place properly and have a tendency to fall out when the bolts holding the whole camshaft together are loosened, so I've had to add some weak glue to hold them in place. The large gear and 14mm diameter shaft have been the most heavyweight engineering I've done on this project, and I'm pleased to say that and the input shaft, reduced 3:1 with a 75:25T gear reduction, are aligned and turning smoothly. A further set of 'combs' on the bottom and the bar which holds the Bowden cables to connect to the followers was designed and ready to cut when I lost access to the laser cutter. The instruction decoder (the yellow box on top of the sequencer) is waiting to be assembled, but is the same design as the memory address decoder, so I'm not expecting any problems with that.
+
+
+
+
+Above the sequencer, the instruction counter and separate metering unit for it still need to be cut, but these are mostly copies of parts already present on the datapath and which work well, so should be straightforward.
+
+
+Return to index]]></description>
+<pubDate>Fri, 10 Apr 2020 00:00:00 GMT</pubDate>
+</item>
+<item><title>Arm-mounted CRT Raspberry Pi unit</title>
+<description><![CDATA[<a href="https://www.srimech.com/wearable-crt.html">Link to original article</a>
+Arm-mounted CRT Raspberry Pi unit
+
+
+I was at 
+Electromagnetic Field
+ two weeks ago, which had a cyberpunk-themed area. Some months ago I'd bought a Sinclar FTV1 (or TV-80) which is a flat(ish) screen TV using a cathode ray tube, so I decided to turn it into an arm-mounted portable computer. The result comes out looking a little like the British equivalent of RobCo's attempt at a Pip-Boy 3000:
+
+
+Wearable computer in use
+The computer part comes from a Raspberry Pi Zero W, which can connect to Electromagnetic Field's field-wide wifi and display information pulled from feeds around the camp. All Raspberry Pis have composite video output, although it's not always obvious. On the Zero series it's on a couple of pads which you need to solder wires or header pins to.
+
+
+The Sinclair FTV1 is a much older device, and has no video inputs at all other than its aerial. This means it's unable to receive any TV at all in the UK, since we switched off analogue broadcasts many years ago, and the FTV1 definitely does not decode digital TV. However, we can turn a composite signal into UHF video, suitable for connection to the TV's aerial. In the pictures, you can see a twist of copper wire loosely connecting the UHF modulator (the silver box) to the aerial. Connections don't have to be particularly good for this to work.
+
+
+Disconnected computer, showing arm straps
+The UHF modulator is made by Astec who also made the modulators on many 8-bit home computers, to allow them to connect to TVs. I got this one off eBay, and it appears to be new old stock - it came in a bag with the original datasheet, and there seem to be plenty available. The one I've used is a special version which can also modulate audio, although the Zero doesn't have analogue audio out so this hasn't been used yet.
+
+
+It's quite likely that you could bypass the UHF stage altogether, by finding the composite signal inside the TV-80. The TV-80 probably has a circuit inside which does the opposite of the modulator to turn UHF back into a composite video signal. However, I wanted to avoid modifying an otherwise untouched TV-80, and also the noise-prone UHF signal gives some wonderful glitches:
+
+
+The brief out-of-focus parts are my phone trying to refocus, everything else is the TV signal with its interference.
+
+
+The computer doesn't do much at the moment - when connected to Electromagnetic Field's network it could show the list of beers on at the bar, and show the weather forecast. The software is written in PyGame, writing directly to the framebuffer, and was meant to resemble teletext - a series of pages from 000-999 with some dynamic content.
+
+
+There wasn't room for a battery, so this needs to run off a USB power bank. I had the power lead for the computer running into my shirt sleeve and down to a power bank in my pocket. The FTV1 is surprisingly efficient for a CRT - it draws less than 100mA at 5V. Since it was originally meant to run off custom disposable batteries, they probably put a lot of work into power draw. The Raspberry Pi uses a bit more power, but a candy bar sized power bank will happily run it for many hours.
+
+
+Update: I was asked for a schematic diagram, so I've put together another terrible SVG diagram which is how it works, as best I remember. Click to enlarge:
+
+
+Block wiring diagram
+As with most of my projects I can't provide actual build instructions; this is just a record of what I've built, as best I remember it - if you want to try and reproduce it you will need to research the parts and verify the design yourself. Also bear in mind:
+
+
+
+
+Even small CRTs contain dangerous voltages, and may retain them after they're switched off. Since this doesn't modify the CRT it should be fairly safe, but it could still be dangerous if you spill a drink on it, especially if it's attached to your arm.
+
+
+The Astec modulators have a lot of adjustment screws and may take a long time to adjust before you get a picture.
+
+
+The Sinclair TV draws so much current on startup that it restarts the Raspberry Pi in my setup. You might want to add some capacitors, or separate power wiring to the TV.
+
+
+
+
+Return to index]]></description>
+<pubDate>Sat, 15 Sep 2018 00:00:00 GMT</pubDate>
+</item>
+<item><title>Mechanical replica of the Manchester SSEM (Baby)</title>
+<description><![CDATA[<a href="https://www.srimech.com/intro.html">Link to original article</a>
+Mechanical replica of the Manchester SSEM (Baby)
+
+
+I've not posted here in a while because I've been working on one big project, a mechanical version of Manchester University's 
+Small-Scale Experimental Machine
+	, otherwise known as the Baby.
+
+
+Previous machines I've built have been either Turing machines or other simple automata such as 
+Langton's Ant
+. These are relatively simple machines compared to the current project, but would require vast amounts of space and time to do anything useful.
+
+
+Implementing something that looks similar to a modern computer is entirely possible. The SSEM is a very simple machine, so makes a good design to base a mechanical computer on. Its main features are:
+
+
+
+
+RAM with 32 addressable words of 32 bits each, for a total of 1024 bits of storage.
+
+
+Two special-purpose registers: the accumulator and program counter
+
+
+A subtractor unit where most CPUs would have a more general arithmetic and logic unit.
+
+
+
+
+Here's a diagram from Wikipedia, of the SSEM datapath:
+
+
+SSEM architecture diagram by Malles Fatuorum via Wikimedia Commons (CC-BY-3.0)
+The subtractor only feeds into the accumulator - so the accumulator can only be updated with the result of a subtraction. Not only that, but the first operand to the subtraction is always the accumulator or zero. You can also see this in the instruction set: MVN and SUB are the only operations which update the accumulator. MVN ('move negative') of X just means set the accumulator to 0-X, so you only need to clear the accumulator first before treating MVN exactly as a SUB.
+
+
+In practical terms, that means we can combine the subtractor and accumulator into one unit. The design for the subtractor is a fairly common one, used by the Digi-Comp II in the 1960s. It consists of a staircase of toggles which change direction when a ball bearing passes through them, sending the bearing left or right depending on its new state. The diagonal arrangement allows for carry - a ball bearing continuing left will flip the next most significant bit.
+
+
+Subtractor/accumulator animation
+What you can't see in this GIF is the second layer behind the main toggles, which divert a ball bearing without changing state - this is used to read the accumulator without updating it, by passing more ball bearings into a second plane.
+
+
+Next up is the memory, which needs to be random-access. Below is an 8x8 cell made from lasercut acrylic:
+
+
+Vertical 8x8 memory
+This really needs an animation to demonstrate how it works, which I'll try and make soon. This is an 8x8 cell, but it can be chained in both directions: connecting more units to the left would make the words longer, and adding units below increases the number of memory locations. In this way, this will eventually build up to the full 32x32 bit memory used by the SSEM.
+
+
+The address decoder uses the 
+Mechanical decoder logic
+ I mentioned in a previous post.
+
+
+There are a lot more details still to add; the instruction counter also uses a staircase adder, and the instruction decoder will use the [[Mechanical array logic|array logic]] system from another older post. Devices which meter out exactly 8 ball bearings, sense ball bearings and transmit the data back to the top of the machine are all in progress. These turn out to be much more complicated than just the memory and arithmetic, but aren't so interesting from a computing point of view. All the details, along with some very badly documented OpenSCAD files, are up on GitHub, in my 
+Offspring
+ repository. ('Offspring' being a play on the original 'Baby' name, given the mechnical version will almost certainly require some springs.)
+
+
+Return to index]]></description>
+<pubDate>Thu, 10 May 2018 00:00:00 GMT</pubDate>
+</item>
+<item><title>Mechanical array logic</title>
+<description><![CDATA[<a href="https://www.srimech.com/array_logic.html">Link to original article</a>
+Mechanical array logic
+
+
+The 
+decoder logic
+ I described in the previous post can be used as part of an array logic device. Each output rod from the decoder needs to raise a selected set of output rods, which can then be driven by another power source.
+
+
+Array logic diagram
+As in thje decoder logic, one lever can drop into a slot made by the arrangement of input rods. The output cranks will usually fall down, but in the one row where the input lever has fallen, the output crank will be blocked, and continue to stay in the raised position.
+
+
+Output rods then run across all the output cranks. they will be lifted by the one output crank which is raised. The output cranks have a pattern on bumps on top, which will determine which outputs are raised.
+
+
+Output rod diagram
+The output rods, raised (or not) by the output cranks, are driven by the red plate shown in this diagram. If an output rod is raised, it will be caught by the drive plate and pushed forward when the drive plate is pushed forward. The second, higher step always catches the drive plate when the drive plate is pushed back, so all rods return to zero in the first part of the cycle.
+
+
+One end of the output rod can then be attached to a Bowden cable interconnect.
+
+
+I've made two prototypes of this at 
+Trafford FabLab
+ in Altrincham. Neither are quite working correctly, but they are close enough to prove the concept.
+
+
+The following image is the first prototype. The input levers have been removed
+(the same parts were re-used for the second prototype) so you can see the pattern on the input rods.
+
+
+
+
+The next image is the more complete second prototype. This shows the drive plate on top and the bracket (top left) used to connect Bowden cables to so the drive plate can be driven. On the right hand side, two Bowden connectors are attached, one driving one input and one driven by one output.
+
+
+
+
+Once developed until they are highly reliable, large numbers of these units could be used to create any boolean logic circuit. Since each functions as a register as well (the output is only updated when the output drive is cycled) they can create latched logic using a two-phase clock. The only parts missing are a fan-out connector, to connect one output to several inputs, and the cams necessary to run the various sequence levers.
+
+
+This scheme should enable a fairly rapid gate propagation time, but even so, creating a binary adder with this technology will lead to large delays. Also, constructing memory from these systems would be very inefficient in terms of the number of parts. Handily, there are shortcuts for both of those which I'll write about soon.
+
+
+The machines pictured here were cut using a laser cutter at 
+Trafford FabLab
+ which is an excellent resource for anyone wanting to make physical prototypes.
+
+
+Return to index]]></description>
+<pubDate>Sat, 16 Sep 2017 00:00:00 GMT</pubDate>
+</item>
+<item><title>Mechanical decoder logic</title>
+<description><![CDATA[<a href="https://www.srimech.com/decoder.html">Link to original article</a>
+Mechanical decoder logic
+
+
+A 1-of-n decoder is an electronic device which takes a number (n) of binary inputs and produces a binary '1' on one of 2^n outputs. It's a special case of a demultiplexer in which the data input is always '1'.
+
+
+Schematic diagram for a 3-to-8 decoder
+Applying, say, the digital pattern "101" on the inputs will cause output 5 to be high and all the other outputs to be low.
+
+
+A decoder can be part of a programmable logic array. By taking the logical "or" function of selected outputs of a decoder, any function of the decoder's inputs can be mapped to any output:
+
+
+Programmable logic array using demultiplexer and or gates
+Implementing a decoder mechanically is relatively easy. We create a series of rods for each selection input, with bumps that enable a plate to fall into a gap, with each rod moved a small distance, or not, depending on the input.
+
+
+Diagram of enumerator rods
+In the top diagram all the rods are in the off state, and output zero is able to fall into the gap provided. The output plate can only fall if all the rods have a space where the rod can fall. In the bottom diagram, output 5 is selected by moving the 1 and 4 rods one space to the right.
+
+
+Following is a picture of a 3-to-8 decoder I've made using laser-cut acrylic. There is nothing to drive the inputs or use the outputs at the moment, but hopefully it demonstrates the principle.
+
+
+Physical enumerator rods
+In this picture, the second (2^1) rod is moved right by 5mm, and the rod in position 2 has dropped (0 is on the right). The red lever on the left lifts up all the output rods at once so the input can be changed.
+
+
+As well as providing a means of general combinational logic, the decoder is also a vital part of my RAM system. Using a three-input decoder to select one column, and another three input decoder to select one row, we can select one element out of an 8x8 matrix, which works as a 64-bit memory.
+
+
+Return to index]]></description>
+<pubDate>Sun, 25 Jun 2017 00:00:00 GMT</pubDate>
+</item>
+<item><title>Langton's Ant with Hexbugs</title>
+<description><![CDATA[<a href="https://www.srimech.com/langtons-ant.html">Link to original article</a>
+Langton's Ant with Hexbugs
+
+
+Langton's Ant
+ is a 2D automaton which is Turing complete and also suitable for a simple mechanical implementation.
+
+
+A star-shaped piece of plastic which can rotate about its centre is placed in the centre of each cell, and a circle of plastic placed in the corner of each cell blocks its movement and forms a thin channel between it and the star-shaped piece.
+
+
+A small object entering from the right side (1) will be directed to the left and as it continues forward it will rotate the star-shaped piece to allow its exit at the base of the cell. The rotated star shape will direct the next object (2) which enters from the right upwards. The two rotation states of the star shape are analogous to the black and white state of a cell in Langton's ant. Given a large enough field of mechanical cells, all that is needed is a object which will continue to move forward in the channel to run Langton's ant.
+
+
+Here's a video of a mechanical implementation. Skip on to about 4:20 to see it in action - before that I'm just explaining what Langton's ant is.
+
+
+When I've made previous mechanical computers, I've avoided making memory out of custom-made pieces, because this is something which must be produced at large scale. For this reason the Turing machines I've made used ball bearings placed on standard steel grid as the memory. In this Langton's ant system, the memory is slightly more complicated to make, but the processing element is a simple as it could get.
+
+
+Another advantage is that the proofs of universality of Langton's ant are much simpler and more compact (requiring fewer memory cells) than proofs which go via rule 110, such as the 5/2 Turing machine.
+
+
+
+
+Complexity of Langton's Ant
+, University of Chile
+
+
+
+
+Return to index]]></description>
+<pubDate>Sun, 08 Jan 2017 00:00:00 GMT</pubDate>
+</item>
+<item><title>Sliding plate logic gates</title>
+<description><![CDATA[<a href="https://www.srimech.com/zuse.html">Link to original article</a>
+Sliding plate logic gates
+
+
+This is a demonstration of an OR gate in sliding plate logic, as used by Konrad Zuse in his Z1 computer. It can be made out of laser-cut acrylic and M3 nuts and bolts.
+
+
+The inputs to the gate are the two rods on top. These can be pushed upwards (0) or downwards (1). To run a 'clock cycle', the lever on the left should start in the centre, vertical position. It is then pushed fully left and then fully right, then returned to vertical. The output rod on the right will be returned to zero initially, and then pushed right if the output is 1. To chain several of these gates together you'd use a two-phase non-overlapping clock, as you would do with an electrical circuit.
+
+
+Some features of this design:
+
+
+
+
+
+
+It has gain. The output rod's movement is powered both in the 0 and 1 positions and it is powered entirely by the clock lever. It requires less power on the input than it provides on the output - which is necessary if you want to chain several gates together.
+
+
+
+
+
+
+Inversion is free on the inputs. By inverting the pattern on the red sliding gates, the inputs can be inverted. This can turn the OR gate into a NAND gate, for example. It would need more modifications to make an AND gate, but these can be made by chaining two gate units together instead.
+
+
+
+
+
+
+This is a laser-cut acrylic version which I've made. It needs some manual filing after cutting to make everything work smoothly - one of the biggest problems is the output rod sticking to the blue drive rod because they're too close together.
+
+
+If you want to try and recreate this, there are OpenSCAD plans and lasercutting files at 
+https://www.github.com/jmacarthur/slidinglogic
+. The pins used to connect the plates are 3mm diameter and 6mm long steel dowel pins. You can make them yourself by cutting up 3mm rod or screws, but it's difficult to work with such short pieces. Scanning eBay or Amazon in your country will probably find a supplier of metal dowels.
+
+
+Return to index]]></description>
+<pubDate>Tue, 29 Sep 2015 00:00:00 GMT</pubDate>
+</item>
+<item><title>AVR Minimus servo controller</title>
+<description><![CDATA[<a href="https://www.srimech.com/minimus-servo.html">Link to original article</a>
+AVR Minimus servo controller
+
+
+I wrote a servo controlling program for the AVR Minimus. It can control up to three servo motors given commands over a virtual serial port (over the USB connector).
+
+
+It's based on an example program from the 
+LUFA library
+. LUFA is necessary for the virtual serial communications - doing the actual servo signals is pretty easy.
+
+
+There are more details on the github page: 
+https://github.com/jmacarthur/minimus-servo
+
+
+Don't do what I did and power a servo motor directly from the Minimus - I don't know how much power a servo draws, but it's probably more than the USB port should supply.
+
+
+Return to index]]></description>
+<pubDate>Sun, 12 Apr 2015 00:00:00 GMT</pubDate>
+</item>
+<item><title>Zeta toggle-switch computer</title>
+<description><![CDATA[<a href="https://www.srimech.com/zeta.html">Link to original article</a>
+Zeta toggle-switch computer
+
+
+The Zeta is a minimal Z80 toggle-switch computer. It has a Zilog Z80 microprocessor, 256 bytes of RAM and the only interface is the front panel which directly sets and reads the address and data buses.
+
+
+
+
+There is a video of it executing Euclid's algorithm:
+
+
+There are more details on the github page: 
+https://github.com/jmacarthur/zeta256
+
+
+Return to index]]></description>
+<pubDate>Sat, 11 Apr 2015 00:00:00 GMT</pubDate>
+</item>
+</channel></rss>

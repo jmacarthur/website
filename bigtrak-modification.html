@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="styles.css"><title>Bigtrak modification with IGEP + MBED</title></head><body><h1>Bigtrak modification with IGEP + MBED</h1>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/bigtrak.jpeg" alt=""></div><center></center></div></p><p>Zeon Tech have remade the BigTrak. I'd been wanting one of these for quite a while before the remake came around, so I decided I had to have one. They're pretty cheap - going for about 21 quid on Amazon at the moment - and a fairly big and sturdy platform to build an autonomous vehicle on.</p>
+<p>IGEP's V2 board fits neatly into the space where the keypad was. The IGEP is a board similar to the BeagleBoard, but quite a bit smaller and featuring onboard WiFi. Otherwise it's similar - a Cortex-A8 ARM processor running at 720MHz, C64 graphics, 512MB of RAM, DVI, sound, a real ethernet socket and USB. This is usable as a desktop PC if you load Ubuntu onto it. It's also pretty low power, drawing about 5W at full load, which is great for a mobile application. Unfortunately, I found getting an OS with all the features I wanted quite tricky.</p>
+<h2>IGEP Hardware</h2>
+<p>The only problem I had with the IGEP was that it didn't seem to power USB peripherals from the main USB socket. I needed to attach a powered hub to use my USB wireless keyboard. Apparently the OTG socket (the one with the smaller socket) does power devices, so you might want to try that one.</p>
+<h2>IGEP Software</h2>
+<p>There are a number of suggestions for operating system setups at <a href="http://labs.igep.es/">http://labs.igep.es/</a> but none of them quite fit my bill. The instrutcions for Ubuntu 9.04 worked and produced a nicely working desktop computer with WiFi, but lacked the cdc-acm module which was necessary to talk to the mbed controller. I couldn't get the Ubuntu 10.04 image to boot at all.</p>
+<p>My best success was with the OpenBricks distribution, which is related to the Geexbox distribution mentioned on the wiki. OpenBricks will cross-compile a new linux distribution from scratch. It can specifically target the IGEPv2.</p>
+<p>This is a list of the steps I took to get a bootable image with ttyACM and WiFi support. I've written this down from memory, and there may be steps missing - I will try and go through this from scratch to check it in future.</p>
+<pre><code>hg clone http://hg.openbricks.org/openbricks
+cd openbricks 
+make menuconfig
+Set the options you want for the image, ignoring kernel/module options. You can remove most of the networking services so save time, but enable Telnet and make it start on boot.
+make
+scripts/clean busybox; scripts/build busybox
+cd packages/busybox
+make menuconfig here; set it to build &lt;i&gt;udhcpc&lt;/i&gt; as well as anything else you think you might need
+cd ../.. back to the openbricks top level
+make
+</code></pre>
+<ul>
+<li>Set up a microSD card with a FAT boot partition and an EXT2/3 root partition, using the script at <a href="http://www.sakoman.com/OMAP3/a-script-for-partitioningformatting-a-bootable-sdmicrosd-card.html">http://www.sakoman.com/OMAP3/a-script-for-partitioningformatting-a-bootable-sdmicrosd-card.html</a></li>
+<li>Now, you should have a good root image in binaries/binaries.&lt;something&gt;/</li>
+<li>Copy this to the rootfs</li>
+<li>Find the linux kernel and modules distribution on <a href="http://labs.igep.es/index.php/The_Linux_kernel">http://labs.igep.es/index.php/The_Linux_kernel</a>. Extract the linux image as rootfs/boot/uImage and untar the modules tarball so it ends up in rootfs/var.</li>
+<li>Copy rootfs/boot/uImage and rootfs/boot/boot.ini to bootfs.</li>
+<li>Get the Marvell wireless drivers from <a href="http://extranet.marvell.com/drivers/driverDisplay.do?driverId=203">http://extranet.marvell.com/drivers/driverDisplay.do?driverId=203</a>. Read and accept the licence, then download the zip file. Unzip it and untar the tar file (not the tgz file) and you should have a FwImage directory. In that directory, rename helper_sd.bin to sd8686_helper.bin. Copy both .bin files to /firmware and /lib/firmware on your rootfs.</li>
+<li>If you think you'll need any extra modules to start your board, add them to rootfs/etc/modules. I needed &quot;ehd-ehci&quot; to make my keyboard work. The board should always be accessible via telnet over wired ethernet, so you should always have a way in even if normal input devices don't work.</li>
+<li>sync;sync and unmount both partitions, then put your microSD card into the IGEP and start it up.</li>
+</ul>
+<h2>Starting WiFi</h2>
+<p>The instructions at <a href="http://labs.igep.es/index.php/How_to_setup_Marvell_88w8686_SDIO_wifi#How_to_get_WIFI_active_upon_system_start_.28using_a_WPA2_access-point.29">http://labs.igep.es/index.php/How_to_setup_Marvell_88w8686_SDIO_wifi#How_to_get_WIFI_active_upon_system_start_.28using_a_WPA2_access-point.29</a> are helpful here. You should already have the wireless drivers. You should have sd8686.bin and sd8686_helper.bin in /lib/firmware and /firmware (only one is necessary, but I don't know which one)</p>
+<p>Create a wpa_supplicant.conf on your desktop with wpa_passphrase:</p>
+<pre><code>wpa_passphrase &quot;your SSID&quot; yourPassword &gt; wpa_supplicant.conf
+</code></pre>
+<p>That creates the basic layout. You'll need to add &quot;proto&quot;, &quot;key mgmt&quot; and &quot;parwise&quot;; the IGEP page suggests values for those, but I found I needed different settings and additionally the 'group' command. It will depend on your access point - trial and error got it for me.</p>
+<p>This is my wpa_supplicant.conf:</p>
+<pre><code>network={
+ssid=&quot;ikaria&quot;
+psk=&lt;long string of hex digits&gt;
+proto=WPA
+key_mgmt=WPA-PSK
+pairwise=TKIP
+group=TKIP
+}
+</code></pre>
+<p>With that in <code>/etc/wpa_supplicant</code>, you should find that <code>wpa_supplicant -iwlan0 -c/etc/wpa_supplicant.conf -d&amp;</code> will bring up wlan0. You'll then need to assign an IP address to it. Try <code>udhcpc -iwlan0</code> to get an address and <code>ifconfig wlan0 &lt;ip address&gt;</code> to assign it to the adapter.</p>
+<p>Since I want my card to start on boot, I chose a fixed IP address and put this into /etc/wifi:</p>
+<pre><code>wpa_supplicant -iwlan0 -c/etc/wpa_supplicant.conf -d&amp;
+sleep 60
+ifconfig wlan0 192.168.80.216
+</code></pre>
+<hr />
+<p>You could write a script which parses the output of <tt>udhcpd</tt> to get the IP - but there's probably a better way to get DHCP working.</p>
+<p>After that, it just remains to add something to /etc/init to get it started on boot. Create /etc/init/wifi.conf containing this:</p>
+<hr />
+<pre><code>author       &quot;JimM&quot;
+start on started networking
+script
+sh /etc/wifi
+end script
+</code></pre>
+<hr />
+<p>This is pretty dirty, but it works. Any suggestions on how to do this more neatly are welcome.</p>
+<h2>PSU</h2>
+<p>The other part I constructed is a switchmode power supply. This is based on a MIC4576-5 chip. There's a datasheet at <a href="http://pdf1.alldatasheet.com/datasheet-pdf/view/74603/MICREL/MIC4576-5.0BT.html">http://pdf1.alldatasheet.com/datasheet-pdf/view/74603/MICREL/MIC4576-5.0BT.html</a> (You'll need to click through a few links). I've just built the example application from that datasheet, on stripboard - the only slight oddity is having to drill slightly larger holes in the stripboard to fit the diode's leads through. I also attached a piece of sheet copper to the chip to act as heatsink, with some thermal transfer paste, and used that to mount the whole circuit. With the heatsink, this easily powers the IGEP, hub, mbed and motor controllers without getting warm, off a 7.2V NiCd racing pack.</p>
+<p><a href="index.html">Return to index</a></p></body>
+</html>

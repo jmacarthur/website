@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="styles.css"><title>12 volt mains</title></head><body><h1>12 volt mains</h1>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/12volt.jpeg" alt="(Highlight)"></div><center>(Highlight)</center></div></p><p>If you like gadgets as much as me you probably have a large number of AC adaptors with power bricks cluttering your house up. A lot of these have different output voltages, but I have quite a few that deliver 12 volts, or claim to. Is it possible to replace some of these with a single transformer to simplify the wiring and increase efficiency?</p>
+<p>The experiments I've done so far suggest that the first part is quite possible, but surprisingly, I couldn't run my appliances as efficiently with a single power supply than with individual bricks.</p>
+<p>The appliances I used for this were my Netgear ADSL Wifi router, my 20&quot; LCD TV, and my mini-itx based server computer.</p>
+<p>The first step was to give each a common connector. I split the cable on each and attached a PC drive power connector on each side. Drive power connectors are cheap, meant specifically for 12V and can be plugged straight into an ATX power supply.</p>
+<p>Having done that I reconnected them to their original power supplies and switched them all on, checking the power consumption for each. Measured at the mains socket with a plug-in power meter, I got: PC on idle: 28W. TV: 50W. and the router: 7W. Total 85W. Incidentally, if you repeat this experiment, it might be better to plug all those into a power strip and plug that into the power meter, in case the meter has some non-linear error.</p>
+<p>Using the first attempt - an &quot;L&amp;W&quot; 250W power supply used 48W just to run the router and PC - obviously less efficient. The TV wouldn't work properly at all - I got sound but no picture. A quick check revealed that the 12V output of this power supply was actually only raising 11.05V unloaded - which presumably is not enough to power the TV properly. The PSU also used 12W without any load at all.</p>
+<p>I tried again with an older Opus PSU which had the same problem powering the TV. It also used 8W unloaded.</p>
+<p>Next was a Morex PSU, only a 200W model for a micro-ATX system but this was evidently of better quality and managed to get the TV running. However, just the TV and PC drew 92W from the mains - over the limit before the router was connected. It also drew 11W when idle.</p>
+<p>The last test was my bench PSU. This is a bit of a beast, rated at 40A continuous, but given its higher cost I thought it might stand a chance of being more efficient. No such luck though - with all three appliances it drew 110W, consuming 18W unloaded.</p>
+<p>So, while it might make the wiring neater if done properly, I've yet to find a power supply which will do the job more efficiently than using individual power blocks.</p>
+<p>I suspect that computer PSUs are not the best choice for this job, as they are probably geared towards delivering a very stable smooth 5V and 12V rather than efficiency. The power bricks are not, so far as I can tell, very stable in their output voltage, probably relying on further conditioning inside the appliance.</p>
+<p>As usual, I wouldn't recommend anyone else trying this for themselves - running things on too low a voltage could damage them, and not all PSUs output the voltage they claim - the router's power brick, for example, delivers 16V when unloaded.</p>
+<p><a href="index.html">Return to index</a></p></body>
+</html>

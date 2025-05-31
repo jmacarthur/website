@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Jim MacArthur" />
+  <title>“Offspring”, a mechanical digital computer modelled on the Manchester Baby</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">“Offspring”, a mechanical digital computer modelled on the Manchester Baby</h1>
+<p class="author">Jim MacArthur</p>
+<p class="date">February 2022</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#disclaimer">Disclaimer</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#structure">Structure</a></li>
+<li><a href="#description-of-parts">Description of parts</a><ul>
+<li><a href="#memory-injectorhopper">Memory injector/hopper</a></li>
+<li><a href="#memory-unit">Memory unit</a><ul>
+<li><a href="#reading-data">Reading data</a></li>
+<li><a href="#writing-data">Writing data</a></li>
+<li><a href="#constructed-example">Constructed example</a></li>
+</ul></li>
+<li><a href="#memory-address-decoder">Memory address decoder</a></li>
+<li><a href="#mid-position-regenerator">Mid-position regenerator</a></li>
+<li><a href="#diverter-unit">Diverter unit</a></li>
+<li><a href="#adder-subtractor-units">Adder-subtractor units</a></li>
+<li><a href="#base-regenerator">Base regenerator</a></li>
+<li><a href="#memory-address-sender">Memory address sender</a></li>
+<li><a href="#cmp-skip-unit">CMP-Skip unit</a></li>
+<li><a href="#sequencer">Sequencer</a></li>
+<li><a href="#ball-bearing-recirculation">Ball bearing recirculation</a></li>
+</ul></li>
+<li><a href="#list-of-signals">List of signals</a><ul>
+<li><a href="#diverter-signals">Diverter signals</a></li>
+</ul></li>
+<li><a href="#instruction-format">Instruction format</a></li>
+<li><a href="#instruction-sequence">Instruction sequence</a><ul>
+<li><a href="#instruction-fetch">Instruction fetch</a></li>
+<li><a href="#instruction-regeneration">Instruction regeneration</a></li>
+<li><a href="#instruction-decode">Instruction decode</a></li>
+<li><a href="#general-instruction-phase">General instruction phase</a></li>
+<li><a href="#argument-fetch">Argument fetch</a></li>
+<li><a href="#sto-instruction-phase">STO instruction phase</a></li>
+<li><a href="#final-phase">Final phase</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="disclaimer">Disclaimer</h1>
+<p>This document does not describe how to make the computer. This is a schematic description of the machine, and will require a great deal of engineering work to produce working drawings. Nonetheless, the majority of the machine has been built at the time of writing, as illustrated in figure <a href="#fig:offspringphoto" data-reference-type="ref" data-reference="fig:offspringphoto">1</a>.</p>
+<figure>
+<img src="pandoc-images/f48ccf53c7bbd0321fc6dca532b405b3bc1600a7.png" alt="Photograph of the computer in February 2022" id="fig:offspringphoto" style="width:80.0%" /><figcaption>Photograph of the computer in February 2022<span label="fig:offspringphoto"></span></figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>Data in the computer are represented by 6.35mm or 1/4 inch steel ball bearings. Data are transmitted by the ball bearings falling under gravity. Presence of a ball bearing in a particular position can be considered a logical ‘1’ and absence a logical ‘0’.</p>
+<p>Figure <a href="#fig:datapath" data-reference-type="ref" data-reference="fig:datapath">2</a> shows the outline datapath of the computer. Data cannot flow only in one direction, so information is also transmitted upwards from the <em>mid regenerator</em> and <em>base regenerator</em> to the <em>memory injector</em> via cable, and from the <em>address sender</em> to the <em>address decoder</em> by rigid steel rod.</p>
+<p>The machine can be constructed from laser-cut acrylic, fused-deposition PLA 3D printed parts, and commonly available structural components such as OpenBeam and perforated steel angle section.</p>
+<figure>
+<img src="pandoc-images/e2093d8dbb01d3604b96258236a481cd11af31bd.png" alt="Datapath overview" id="fig:datapath" style="width:90.0%" /><figcaption>Datapath overview<span label="fig:datapath"></span></figcaption>
+</figure>
+<h1 id="structure">Structure</h1>
+<p>The main components are:</p>
+<ul>
+<li><p>A ball bearing hopper and injector unit</p></li>
+<li><p>16-word 8-bit random access memory unit</p></li>
+<li><p>16-address memory address decoder</p></li>
+<li><p>Mid-unit regenerator</p></li>
+<li><p>Diverter unit, used to route ball bearings to a particular path through the machine</p></li>
+<li><p>Two adder-subtractor units</p></li>
+<li><p>Memory address sender</p></li>
+<li><p>Base regenerator</p></li>
+<li><p>Instruction decoder and sequencer unit</p></li>
+</ul>
+<h1 id="description-of-parts">Description of parts</h1>
+<h2 id="memory-injectorhopper">Memory injector/hopper</h2>
+<p>This stores a stock of ball bearings and can send a ball bearing down each of eight bit channels. A ball bearing can be requested on each of the eight bit channels by lifting a lever to the rear of the hopper or by pushing a button on the front of the machine. Each of the eight rear levers are connected by lightweight cable or string to both of the regenerator units below. The front panel buttons are intended for manual programming of the memory prior to automatic operation.</p>
+<p><span>r</span><span>0.5</span> <img src="pandoc-images/6d1cfdd927e05c88dbe9de57b2666d1f09e22a23.png" alt="image" style="width:40.0%" /></p>
+<p>Figure <a href="#fig:injector" data-reference-type="ref" data-reference="fig:injector">[fig:injector]</a> shows the construction. A crank arm connects to both of the regenerators and a bias weight, and moves a sliding part with a gap forward and backward. When the sliding part moves to the right, the gap accepts a ball bearing from the hopper, and on moving left, the ball is released. It does not matter whether the ‘rest’ position for the slider is left or right; one cycle (left, right) or (right, left) will drop one ball bearing. Eight of these crank and slider assemblies provide the injector for the 8-bit machine.</p>
+<p>An additional mechanical input can be used to inject a ball bearing into all eight channels at one time.</p>
+<h2 id="memory-unit">Memory unit</h2>
+<p>A memory unit can hold an 8x8 grid of ball bearings. Figure <a href="#fig:memorydiagram" data-reference-type="ref" data-reference="fig:memorydiagram">3</a> shows the principle of operation using a 4-bit-wide memory unit. Presence of a ball bearing in a cell represents a logical ‘1’ and absence represents a logical ‘0’. Memory is accessed by horizontal rows. Each row consists of two horizontal acrylic bars. One bar performs movement between the pass-through channel and storage channel (the “move bar”) and the other bar blocks the pass-through channel (the “block bar”). With no channel selected, in the memory’s default state, ball bearings will pass down the pass-through channel directly through the memory without affecting any part of it.</p>
+<p>An additional mechanism called ‘memory reset’ moves all block and move bars, for all addresses, into the right position.</p>
+<figure>
+<img src="pandoc-images/7da7ff31c48a1b510b96d69175bc4db02c3b6bb3.png" alt="Memory schematic" id="fig:memorydiagram" style="width:90.0%" /><figcaption>Memory schematic<span label="fig:memorydiagram"></span></figcaption>
+</figure>
+<h3 id="reading-data">Reading data</h3>
+<p>To read data from memory, the block bar for a particular channel is moved left. One block bar will be selected by the memory address decoder, to be discussed in a later section. When moving left, the block bar automatically drags the move bar with it, so the ball bearing (if present) for each bit is moved to the pass-through channel. On retraction of the block bar by the memory address decoder, the ball bearing is free to fall into the pass-through channel. The move bar for that row is not retacted by the movement of the block bar. Once enough time has passed for the ball bearing to fall, the ‘memory reset’ mechanism is deployed to move all block and move bars to the right position. The pattern of ball bearings stored in memory is now ejected from the memory in the respective bit columns.</p>
+<p>Reading data is destructive; external mechanisms must perform a data write of the same data read out if the data is to remain in memory.</p>
+<h3 id="writing-data">Writing data</h3>
+<p>To write data to a particular address, the block bar for a particular channel is moved left, and as per the reading operation, the move bar for the same address is dragged left with it. Ball bearings can now be injected into the memory in the pattern of data requested by the injector unit. Any ball bearings entering memory will be stopped at the block bar. Memory reset is now performed for all addresses, pushing both the block bar and move bar at the same time, pushing the captured data into the storage position. The memory address decoder can now be de-asserted.</p>
+<h3 id="constructed-example">Constructed example</h3>
+<p>Figure <a href="#fig:memorypic" data-reference-type="ref" data-reference="fig:memorypic">4</a> shows an 8x8 memory unit constructed from lasercut 3mm acrylic sheet.</p>
+<figure>
+<img src="pandoc-images/3c8cb4d20ae1e91a622e4ac765a8d07bab4df852.png" alt="Photograph of constructed 8x8 memory unit" id="fig:memorypic" style="width:90.0%" /><figcaption>Photograph of constructed 8x8 memory unit<span label="fig:memorypic"></span></figcaption>
+</figure>
+<h2 id="memory-address-decoder">Memory address decoder</h2>
+<p>The memory address decoder takes a set of 4 address bits and allows movement of exactly one memory line based on the combination of those four bits.</p>
+<p>Figure <a href="#fig:decoder" data-reference-type="ref" data-reference="fig:decoder">5</a> shows the schematic representation of the address decoder. Each memory address line has tension constantly applied to it pulling it to the left. The holdoff bar can push all rods to the right simultaneously; this lifts all rods clear of the vertical enumerator rods so the vertical rods are free to move.</p>
+<p>When the holdoff bar is released, this allows all memory word rods to move left. All but one of the word rods will be blocked by the profile of the vertical rods; in figure 3, all address inputs are at ‘0’, so memory address 0 is selected; only horizontal rod 0 can move left by a significant distance. This rod moves the <em>block bar</em> of the memory unit.</p>
+<p>If, before releasing the holdoff bar, the rightmost vertical bar is moved upwards by a short distance, then word line 0 will be blocked at word line 1 will be free to move left, hence selecting memory address 1. If the second rightmost vertical bar is moved instead, address 2 will be selected; if both the two rightmost bars are both moved up, then address 3 is selected, and so on; all combinations of 4 bits select exactly one horizontal memory bar.</p>
+<p>There is a larger gap between memory address 7 and 8 than any other addresses; this accounts for the fact that the memory modules will likely be 8-word units, and will require a small gap between modules.</p>
+<p>The physical address decoder unit allows for 5 decoder rods, and also allows two 4-to-16 decoder units to be stacked vertically; this allows future expansion up to 32 words of memory.</p>
+<figure>
+<img src="pandoc-images/2fab703607f00db413dadd5c2999348abeeffba5.png" alt="Memory address decoder" id="fig:decoder" style="width:90.0%" /><figcaption>Memory address decoder<span label="fig:decoder"></span></figcaption>
+</figure>
+<figure>
+<img src="pandoc-images/0e990fb5150ceadb3c06960360a17e7b48f6b64d.png" alt="Photograph of constructed Memory address decoder" id="fig:decoderpic" style="width:80.0%" /><figcaption>Photograph of constructed Memory address decoder<span label="fig:decoderpic"></span></figcaption>
+</figure>
+<p>In figure <a href="#fig:decoderpic" data-reference-type="ref" data-reference="fig:decoderpic">6</a>, we can see the holdoff bar, which has the label ‘4-to-16 decoder’ printed on it, and adapters at the top of each vertical rod allowing each to be lifted at once.</p>
+<h2 id="mid-position-regenerator">Mid-position regenerator</h2>
+<p>The mid-position regenerator captures data read from memory and provides a signal upwards in the machine to the injector. If a ball bearing enters the machine in a particular bit position, it will provide mechanical connection between the drive arm and sensor arm. When the drive arm is moved clockwise while a ball bearing is present in the bearing gap, a mechanical signal will be sent to the injector to inject another ball bearing in the same bit position. Since the injector feeds into memory, this can be used to re-write the same bit pattern into memory after reading. This rectifies the destructive read property of the memory.</p>
+<p>The regenerator can also release the captured ball bearing to lower parts of the machine. Hence, data is copied: back to memory, and available to lower parts of the machine.</p>
+<figure>
+<img src="pandoc-images/50cfbb68708494a6f09e2610ec20ac87dea3ad18.png" alt="Single bit regenerator" id="fig:regenerator" style="width:40.0%" /><figcaption>Single bit regenerator<span label="fig:regenerator"></span></figcaption>
+</figure>
+<p>The drive arm is shown in figure <a href="#fig:regenerator" data-reference-type="ref" data-reference="fig:regenerator">7</a> in the neutral position. In this position, ball bearings falling into the regenerator will fall into the gap between the sensor arm and drive arm. The sensor arm is blocked from rotating anticlockwise by the sensor arm rest. The drive arm can be rotated clockwise to operate the regenerator. If a ball bearing is present in the gap between drive arm and sensor arm, then the sensor arm is driven clockwise. A block (Drive limiting block) prevents the drive arm moving so far as to move the sensor arm if no ball bearing is present.</p>
+<p>A cable attached to the sensor arm, biased by a weight below the regenerator, provides the signal to the hopper injector unit at the top of the machine to inject a new ball bearing in this bit position. Rotating the drive arm anticlockwise from the neutral position allows the ball bearing (if present) to fall through a gap in the bottom of the machine and on to further devices.</p>
+<figure>
+<img src="pandoc-images/aa697ce4b6fd10cfb4b43366918b00d1cd23691b.png" alt="Rendering of 8-bit regenerator" id="fig:regeneratorrender" style="width:90.0%" /><figcaption>Rendering of 8-bit regenerator<span label="fig:regeneratorrender"></span></figcaption>
+</figure>
+<h2 id="diverter-unit">Diverter unit</h2>
+<p>The diverter unit diverts the set of ball bearings between one of five potential paths:</p>
+<ul>
+<li><p>The update channel of the accumulator</p></li>
+<li><p>The read channel of the accumulator</p></li>
+<li><p>The update channel of the program counter</p></li>
+<li><p>The read channel of the accumulator</p></li>
+<li><p>A split path between the memory address sender and instruction decoder.</p></li>
+</ul>
+<figure>
+<img src="pandoc-images/f36569a04d2d17261d1e4ba4e046ffe08741b4c7.png" alt="Diverter schematic and rendering" id="fig:diverter" style="width:90.0%" /><figcaption>Diverter schematic and rendering<span label="fig:diverter"></span></figcaption>
+</figure>
+<p>The diverter consists of four rotating flaps which can be laid flat across the top of the diverter to allow a ball bearing to pass, or rotated to cause any passing ball bearings to fall through into the channel below. If all four flaps are lowered, ball bearings pass off the end of the diverter where they are captured. In this case, the low 5 bits are sent to the memory address sender and the high 3 bits are sent to the instruction decoder.</p>
+<h2 id="adder-subtractor-units">Adder-subtractor units</h2>
+<p><span>r</span><span>0.5</span> <img src="pandoc-images/3ddd515b32d1c68a7cca6db73d4ae9717399bec0.png" alt="image" style="width:40.0%" /></p>
+<p>Adder-subtractor units act as registers and either binary adders or binary subtractors. These use a toggle design used by the Digi-Comp II (1965) and Turing Tumble (2017). A ball bearing falling into a particular bit channel flips the position of a toggle and exits either left or right depending on its previous position. If a bit is configured to act as an adder, a ball bearing falling onto a toggle previosuly set to ‘0’ will set it to ‘1’ and be discarded. If the bit was previously set to ‘1’, the ball bearing falling onto it will set it to ‘0’ and continue into the next bit, acting as a carry.</p>
+<p>Figure <a href="#fig:subtractor-simple" data-reference-type="ref" data-reference="fig:subtractor-simple">[fig:subtractor-simple]</a> shows two toggles. The initial state of each toggle is shown below. A ball bearing falling into the rightmost (least significant) toggle causes it to flip to 0 and causes carry, because the ball bearing continues to the next toggle rather than being ejected from the adder. The next highest bit, starting at 0, flips to 1 and the ball bearing is ejected to the right. Hence, the initial state <span class="math inline">01<sub><em>b</em></sub></span> becomes <span class="math inline">10<sub><em>b</em></sub></span>.</p>
+<p>Depending on the mapping by ‘left’ and ‘right’ to ‘0’ and ‘1’, and the ‘reset’ position, similar structures can be considered adders or subtractors. Figure <a href="#fig:subtractor-simple" data-reference-type="ref" data-reference="fig:subtractor-simple">[fig:subtractor-simple]</a> shows cells in adder configuration. If the mapping is reversed so that ‘1’ is considered left and ‘0’ right, then a ball bearing falling into the top of a bit in state 1 (left) will not cause borrow from the next most significant bit; if the bit is in state 0 (right) then the ball bearing flips that to 1 before continuing to subtract from the next most significant bit.</p>
+<p>The adder-subtractor units in this device are augmented by a read channel which consists of toggles connected on the same axle to the main toggles. In the read channel, the ball bearing is deflected by the position of the toggle but does not affect it, so no update is performed. In this way, the value of the register can be read out without updating.</p>
+<figure>
+<img src="pandoc-images/ed96a84f2757e4530013d2ebfd96436642ceb81c.png" alt="Adder-subtractor layers" id="fig:subtractor" style="width:90.0%" /><figcaption>Adder-subtractor layers<span label="fig:subtractor"></span></figcaption>
+</figure>
+<p>Two adder-subtractor units are used, both with read-out channels. One is the accumulator, which acts in ‘subtraction’ mode; any data falling into the ‘update’ channel of the accumulator subtracts its value from the accumulator’s stored value. This accounts for the SUB (subtractor from accumulator) and MVN (move negative) instructions, the MVN value being equivalent to subtraction having reset the accumulator to zero before entering data.</p>
+<p>The second adder-subtractor unit is the program counter, which works in addition mode. Any data falling into the update channel of the program counter adds its value to the program counter. This accounts for the JMP (jump absolute) and JRP (jump relative) instructions, with the JMP instruction beting equivalent to addition having set the program counter to zero before entering data.</p>
+<p>To read data from either register, an ‘all bits’ injector command is issued, causing the injector to inject ball bearings into each data channel. These ball bearings pass through the memory without affecting it, pass through the mid-position regenerator without copying, and fall into the read channel of that respective register. The ball bearings passing through a read channel in which the relevant bit is set to ‘0’ are discarded. The ball bearings passing through a read channel in which the relevant bit is set to ‘1’ are passed out through the side of the register for collection by another device for interpretation.</p>
+<h2 id="base-regenerator">Base regenerator</h2>
+<p>This functions in the same manner as the mid-position regenerator, but in this case it is only used to accept output from the accumulator’s read channel. Ball bearings are passed down in a pattern representing the bits in which the accumulator is set to ‘1’. The base regenerator activates for all instructions, but no data will be present in the base regenerator unless the ‘memory read’ path was chosen by the diverter unit, so no signals are sent by the base regenerator unless the ‘STO’ instruction is being performed.</p>
+<h2 id="memory-address-sender">Memory address sender</h2>
+<p>This unit captures ball bearings falling from either the end of the diverter unit (to capture the address portion of a decoded instruction) or the read-out channel of the program counter (to capture the value of the program counter, to fetch the relevant instruction from memory).</p>
+<p>Ball bearings are held in the address sender unit which will then block rods which connect to the address decoder. Where a ball bearing is present in the address sender, the rod cannot fall, hence the relevant address line in the address decoder remains high. Where no ball bearing is present, the rod can fall.</p>
+<p>A signal line is attached to the release/hold lever which will capture ball bearings rolling into the machine or release them. Released ball bearings are discarded into the gutter.</p>
+<figure>
+<img src="pandoc-images/cd2404b885152099c944ef63182d294b044adfab.png" alt="Address sender unit" id="fig:sender" style="width:40.0%" /><figcaption>Address sender unit<span label="fig:sender"></span></figcaption>
+</figure>
+<h2 id="cmp-skip-unit">CMP-Skip unit</h2>
+<p>The CMP-Skip unit performs the CMP operation. When the CMP instruction is selected, a single ball bearing is injected into column 7 of the accumulator read plane and the machine simultaneously diverts the output from bit 7 of the accumulator’s read plane into the lower part of the CMP-Skip unit. If the ball bearing is received into the CMP-Skip unit, that means the accumulator has bit 7 set, indicating the accumulator value is negative (according to two’s complement arithmetic) and the CMP-Skip unit will use this to inject a single bearing into the program counter’s update layer, skipping one instruction. Since the output of the accumulator is lower than the input to the program counter, the captured bit 7 bearing must activate a lever which triggers the program counter increment signal.</p>
+<h2 id="sequencer">Sequencer</h2>
+<p>The sequencer is a large camshaft which sequences all the actions in the machine. It includes the instruction decoder.</p>
+<figure>
+<img src="pandoc-images/f3c3a9260cca8e4c724ac5c1790f6115b05a883b.png" alt="Sequencing cams" id="fig:sequencer" style="width:90.0%" /><figcaption>Sequencing cams<span label="fig:sequencer"></span></figcaption>
+</figure>
+<p>As per figure <a href="#fig:sequencer" data-reference-type="ref" data-reference="fig:sequencer">12</a> two types of cam are used; generic cams whose follower moves unconditionally with the cam, providing the weight attached to the end is sufficient to override the load placed on it, and instruction-dependent cams. Instruction-dependent cams are blocked from moving downwards unless the instruction decoder allows that motion. There are eight instruction-dependent cams, one for each instruction, and exactly one is allowed to move a significant distance during each instruction cycle. The instruction decoder uses a very similar structure to that of the memory address decoder, as in figure <a href="#fig:decoder" data-reference-type="ref" data-reference="fig:decoder">5</a>, but with three inputs and eight output slots. The inputs to the instruction decoder are the three ball bearings which form the most significant three bits of the fetched instruction.</p>
+<p>Each instruction-dependent cam is also lifted very slightly above the instruction decoder while the instruction is being set up, freeing the instruction decoder’s decoder rods so they can move freely. This lifting is performed by the cam.</p>
+<h2 id="ball-bearing-recirculation">Ball bearing recirculation</h2>
+<p>Ball bearings must be recirculated from the <em>gutter</em> to the memory injector/hopper unit, PC increment unit, and CMP-Skip unit. At the time of writing, this must be done manually by an operator. In future operation, this can be provided automatically; this is seen as a smaller problem than the general operation of the computer and as such will be completed at a later date.</p>
+<h1 id="list-of-signals">List of signals</h1>
+<figure>
+<img src="pandoc-images/498f726ede9e327492069064e82d6686200df6ed.png" alt="Rendering of current computer with signal inputs" id="fig:signals" style="width:100.0%" /><figcaption>Rendering of current computer with signal inputs<span label="fig:signals"></span></figcaption>
+</figure>
+<ul>
+<li><p>DEC-RODHOLD: Holds the address decoder’s address rods up.</p></li>
+<li><p>DEC-LINEHOLD: Holds the address decoder’s line outputs right. Must be asserted when changing DEC-RODHOLD. Asserting this signal pulls the memory’s block rods right, but does not pull the move rod right. The MEM-RESET signal is used to reset move rods.</p></li>
+<li><p>MEM-RESET: Pushes all memory lines right.</p></li>
+<li><p>INJ-ALL: Causes the injector to inject a ball bearing into each of the 8 data channels.</p></li>
+<li><p>MID-REGEN: Three-position control. Changes between neutral, regeneration, and release.</p></li>
+<li><p>LOW-REGEN: Three-position control, as per MID-REGEN.</p></li>
+<li><p>PC-RESET: Activates only on JMP instruction and possibly machine reset. Clears the program counter.</p></li>
+<li><p>ACC-RESET: Activates only on LDN and possibly machine reset. Clears the accumulator.</p></li>
+<li><p>ADDRSEND-RELEASE: Releases stored ball bearings from the address sender.</p></li>
+<li><p>IDEC-RESET: Resets instruction decoder.</p></li>
+<li><p>PC-INC: Adds one to the value of the PC by injecting a single ball bearing into the bit 0 column of the PC update layer.</p></li>
+<li><p>ACC-READ: Injects a single ball bearing into the bit 7 column of the accumulator’s read layer and diverts the output from the accumulator output into the CMP skip device.</p></li>
+<li><p>DISCARD: Causes any data leaving memory to be discarded. Used for STO operation.</p></li>
+</ul>
+<h2 id="diverter-signals">Diverter signals</h2>
+<p>Only one diverter signal should be active at any time. Whichever is first in this list will take precedence if multiple diverter signals are active. If no diverter signals are active, ball bearings divert into the address sender and instruction decoder.</p>
+<ul>
+<li><p>DIVERTER-ACCREAD: Diverts bearings to the accumulator read layer. Only active on STO.</p></li>
+<li><p>DIVERTER-ACCUPDATE: Diverts bearings to the accumulator update layer. Active for LDN and SUB.</p></li>
+<li><p>DIVERTER-PCUPDATE: Diverts bearings to the PC update layer. Active for JMP and JRP.</p></li>
+<li><p>DIVERTER-PCREAD: Diverts bearings to the PC read layer. Used during instruction fetch.</p></li>
+</ul>
+<h1 id="instruction-format">Instruction format</h1>
+<p>The Manchester Baby used bits 0-4 as the operand address and bits 13-15 as the ‘function number’ (opcode). Since we only have 8 bits, we use a different format; bits 0-4 remain as the operand address and bits 5-7 are the opcode. The instructions remain roughly the same:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Opcode (MSB first)</th>
+<th style="text-align: center;">Mnemonic</th>
+<th style="text-align: center;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">000</td>
+<td style="text-align: center;">JMP S</td>
+<td style="text-align: center;">Jump absolute to [S]</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">001</td>
+<td style="text-align: center;">JRP S</td>
+<td style="text-align: center;">Jump relative by [S]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">010</td>
+<td style="text-align: center;">LDN S</td>
+<td style="text-align: center;">Load -[S] into accumulator</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">011</td>
+<td style="text-align: center;">STO T</td>
+<td style="text-align: center;">Store accumulator value in memory address T</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">SUB S</td>
+<td style="text-align: center;">Subtract value [S] from accumulator</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">101</td>
+<td style="text-align: center;">SUB S</td>
+<td style="text-align: center;">Subtract value [S] from accumulator</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">110</td>
+<td style="text-align: center;">CMP</td>
+<td style="text-align: center;">Skip next instruction if accumulator is negative</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">111</td>
+<td style="text-align: center;">STP/HLT</td>
+<td style="text-align: center;">Halt machine</td>
+</tr>
+</tbody>
+</table>
+<p>The notation <span class="math inline">[<em>S</em>]</span> indicates the value of the memory location specified by S.</p>
+<p>STP may not be implemented. Instead, the machine should be put into an infinite loop at the end of program execution.</p>
+<h1 id="instruction-sequence">Instruction sequence</h1>
+<h2 id="instruction-fetch">Instruction fetch</h2>
+<p>The instruction fetch phase reads the program counter, sets up the memory address decoder with the value from the program counter, then reads a single value out of memory at that address. This value is the instruction to be executed.</p>
+<ol>
+<li><p>Diverter set to PC read channel. (DIVERTER-PCREAD)</p></li>
+<li><p>Memory decoder de-asserts all address rods (pull all decoder rods high) (DEC-RODHOLD)</p></li>
+<li><p>All-inject. This sends 8 ball bearings through the memory to the mid-position regenerator.(INJ-ALL)</p></li>
+<li><p>Mid position regenerator releases ball bearings without copying. Mid position regenerator returns to neutral position. (MID-REGEN to release, then neutral)</p></li>
+<li><p>Ball bearings pass through PC read channel, setting up memory address sender.</p></li>
+<li><p>Memory decoder drops all rods. (DEC-RODHOLD)</p></li>
+<li><p>Memory decoder drops output. (DEC-LINEHOLD ↓)</p></li>
+<li><p>Memory decoder raises output. (DEC-LINEHOLD ↑)</p></li>
+</ol>
+<p>Instruction fetch is now complete. The relevant instruction is now out of memory into mid-position regenerator.</p>
+<h2 id="instruction-regeneration">Instruction regeneration</h2>
+<ol>
+<li><p>Memory decoder drops output. (DEC-LINEHOLD ↓)</p></li>
+<li><p>Regen performs copy, copying instruction back into memory. (MID-REGEN to copy)</p></li>
+<li><p>Memory performs all-return, storing instruction. (MEM-RESET ↑)</p></li>
+<li><p>Memory decoder raises output (DEC-LINEHOLD ↑).</p></li>
+</ol>
+<p>The instruction is now restored to memory; a copy of instruction is still in mid regenerator.</p>
+<h2 id="instruction-decode">Instruction decode</h2>
+<ol>
+<li><p>Memory raises decoder rod holdoff. (DEC-RODHOLD)</p></li>
+<li><p>Releases any ball bearings from the address sender (ADDRSEND-RELEASE pulse)</p></li>
+<li><p>Diverter set to overflow (address-decoder/instruction decoder) (No diverter signals asserted)</p></li>
+<li><p>Regen releases copy of instruction (MID-REGEN to release, then neutral)</p>
+<p>Instruction decoder now has the instruction bits, and the address sender has the data address.</p></li>
+<li><p>Memory drops all rods. (DEC-RODHOLD down)</p></li>
+</ol>
+<h2 id="general-instruction-phase">General instruction phase</h2>
+<p>For LDN, SUB, JMP or JRP, we eject the relevant value from memory into the accumulator or PC, and regenerate it into memory. For CMP we still eject that value and copy it back into memory, but this time we divert it into the accumulator read channel where it will have no effect, and discard it from the lower regen.</p>
+<ol>
+<li><p>Diverter setup:</p>
+<p>STO: Discard before mid-position regen (DISCARD)</p>
+<p>LDN or SUB: Open to ACC write. (DIVERTER-ACCUPDATE)</p>
+<p>JMP or JRP: Open to PC write. (DIVERTER-PCUPDATE)</p>
+<p>CMP: DIVERTER-ACCREAD</p></li>
+<li><p>Resets performed:</p>
+<p>If LDN, reset ACC.</p>
+<p>If JMP, reset PC.</p></li>
+</ol>
+<h2 id="argument-fetch">Argument fetch</h2>
+<ol>
+<li><p>If STO is selected, assert DISCARD.</p></li>
+<li><p>DEC-LINEHOLD down, then up, then down again. Data is released from memory and memory is back in capture position.</p></li>
+<li><p>MID-REGEN to regenerate, then release, then neutral.</p></li>
+<li><p>MEM-RESET asserted, then DEC-LINEHOLD up. Stores regenerated data back into memory.</p>
+<p>All data has now fallen into the relevant update layer or into the lower regen via the accumulator read later.</p></li>
+<li><p>LOW-REGEN to release, then neutral, discarding any data that was produced from a CMP operation.</p></li>
+</ol>
+<h2 id="sto-instruction-phase">STO instruction phase</h2>
+<ol>
+<li><p>Set flaps to ACC read. (DIVERTER-ACCREAD)</p></li>
+<li><p>Perform all-columns inject. (INJ-ALL)</p></li>
+<li><p>Eject from mid regen (MID-REGEN to release)</p></li>
+<li><p>ACC data now in lower regen.</p></li>
+<li><p>Drop memory line rods (MEM-LINEHOLD), preparing for capture</p></li>
+<li><p>If STO is active, perform lower regen (LOW-REGEN to copy).</p></li>
+<li><p>In all cases, perform lower regen eject (LOW-REGEN to release)</p></li>
+<li><p>Return all memory rows. (MEM-RESET)</p></li>
+<li><p>Raise all memory line rods (MEM-LINEHOLD).</p></li>
+</ol>
+<h2 id="final-phase">Final phase</h2>
+<ol>
+<li><p>Reset all memory (MEM-LINEHOLD, MEM-RODHOLD)</p>
+<p>The following three operations can be performed simultaneously:</p></li>
+<li><p>PC increment. (PC-INC)</p></li>
+<li><p>Release data from memory address sender (ADDRSEND-RELEASE)</p></li>
+<li><p>Reset instruction decoder (IDEC-RESET)</p></li>
+</ol>
+</body>
+</html>

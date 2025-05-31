@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="styles.css"><title>Mechanical decoder logic</title></head><body><h1>Mechanical decoder logic</h1>
+<p>A 1-of-n decoder is an electronic device which takes a number (n) of binary inputs and produces a binary '1' on one of 2^n outputs. It's a special case of a demultiplexer in which the data input is always '1'.</p>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/3-to-8-decoder.png" alt="Schematic diagram for a 3-to-8 decoder"></div><center>Schematic diagram for a 3-to-8 decoder</center></div></p><p>Applying, say, the digital pattern &quot;101&quot; on the inputs will cause output 5 to be high and all the other outputs to be low.</p>
+<p>A decoder can be part of a programmable logic array. By taking the logical &quot;or&quot; function of selected outputs of a decoder, any function of the decoder's inputs can be mapped to any output:</p>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/decoder-logic-array.png" alt="Programmable logic array using demultiplexer and or gates"></div><center>Programmable logic array using demultiplexer and or gates</center></div></p><p>Implementing a decoder mechanically is relatively easy. We create a series of rods for each selection input, with bumps that enable a plate to fall into a gap, with each rod moved a small distance, or not, depending on the input.</p>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/selector.png" alt="Diagram of enumerator rods"></div><center>Diagram of enumerator rods</center></div></p><p>In the top diagram all the rods are in the off state, and output zero is able to fall into the gap provided. The output plate can only fall if all the rods have a space where the rod can fall. In the bottom diagram, output 5 is selected by moving the 1 and 4 rods one space to the right.</p>
+<p>Following is a picture of a 3-to-8 decoder I've made using laser-cut acrylic. There is nothing to drive the inputs or use the outputs at the moment, but hopefully it demonstrates the principle.</p>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/ram-decoder.png" alt="Physical enumerator rods"></div><center>Physical enumerator rods</center></div></p><p>In this picture, the second (2^1) rod is moved right by 5mm, and the rod in position 2 has dropped (0 is on the right). The red lever on the left lifts up all the output rods at once so the input can be changed.</p>
+<p>As well as providing a means of general combinational logic, the decoder is also a vital part of my RAM system. Using a three-input decoder to select one column, and another three input decoder to select one row, we can select one element out of an 8x8 matrix, which works as a 64-bit memory.</p>
+<p><a href="index.html">Return to index</a></p></body>
+</html>

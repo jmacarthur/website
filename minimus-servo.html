@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="styles.css"><title>AVR Minimus servo controller</title></head><body><h1>AVR Minimus servo controller</h1>
+<p><div class="imagebox"><div class="imagecontainer"><img class="inlineimg" src="inline_images/minimus-servo.jpeg" alt=""></div><center></center></div></p><p>I wrote a servo controlling program for the AVR Minimus. It can control up to three servo motors given commands over a virtual serial port (over the USB connector).</p>
+<p>It's based on an example program from the <a href="http://www.fourwalledcubicle.com/LUFA.php">LUFA library</a>. LUFA is necessary for the virtual serial communications - doing the actual servo signals is pretty easy.</p>
+<p>There are more details on the github page: <a href="https://github.com/jmacarthur/minimus-servo">https://github.com/jmacarthur/minimus-servo</a></p>
+<p>Don't do what I did and power a servo motor directly from the Minimus - I don't know how much power a servo draws, but it's probably more than the USB port should supply.</p>
+<p><a href="index.html">Return to index</a></p></body>
+</html>
